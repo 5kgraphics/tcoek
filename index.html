@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Turath College of Education Kano — NCE Portal</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  :root {
+    --green: #0b6b3a;
+    --green-dark: #084d29;
+    --gold: #c9a227;
+    --light: #f4f7f4;
+    --dark: #1c2b24;
+    --danger: #c0392b;
+    --muted: #6b7d72;
+  }
+  body { background: var(--light); color: var(--dark); min-height: 100vh; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: #fff; padding: 18px 24px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
+  .logo {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--gold); color: var(--green-dark);
+    display: grid; place-items: center; font-weight: 800; font-size: 20px;
+  }
+  header h1 { font-size: 18px; line-height: 1.2; }
+  header p { font-size: 12px; opacity: .85; }
+
+  /* Nav */
+  nav {
+    background: #fff; border-bottom: 1px solid #e0e6e1;
+    display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  nav button {
+    border: none; background: transparent; padding: 8px 14px;
+    border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
+    color: var(--muted);
+  }
+  nav button:hover { background: #eef3ee; }
+  nav button.active { background: var(--green); color: #fff; }
+  nav .logout { margin-left: auto; color: var(--danger); }
+
+  /* Layout */
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+  .page { display: none; animation: fade .25s ease; }
+  .page.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* Cards */
+  .card {
+    background: #fff; border-radius: 12px; padding: 22px;
+    box-shadow: 0 2px 12px rgba(20,50,35,.06); margin-bottom: 20px;
+    border: 1px solid #e6ece7;
+  }
+  .card h2 { color: var(--green-dark); margin-bottom: 14px; font-size: 20px; }
+  .card h3 { color: var(--green-dark); margin-bottom: 10px; font-size: 16px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--green), #0d8a4a);
+    color: #fff; border-radius: 12px; padding: 34px 26px; margin-bottom: 20px;
+    position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: "NCE"; position: absolute; right: -10px; bottom: -30px;
+    font-size: 130px; font-weight: 900; opacity: .08;
+  }
+  .hero h2 { font-size: 26px; margin-bottom: 8px; }
+  .hero p { opacity: .92; max-width: 620px; line-height: 1.5; }
+  .hero .badge { display: inline-block; background: var(--gold); color: var(--green-dark);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 12px; }
+
+  /* Grid */
+  .grid { display: grid; gap: 16px; }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .stat { background: #fff; border-left: 4px solid var(--gold); border-radius: 10px; padding: 16px; box-shadow: 0 2px 10px rgba(20,50,35,.06); }
+  .stat small { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  .stat b { display: block; font-size: 26px; color: var(--green-dark); margin-top: 6px; }
+
+  /* Forms */
+  .field { margin-bottom: 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #33463b; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #cfdad2; border-radius: 8px;
+    font-size: 14px; background: #fbfdfb; outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(11,107,58,.12); }
+  .btn {
+    background: var(--green); color: #fff; border: none; border-radius: 8px;
+    padding: 11px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: .2s;
+  }
+  .btn:hover { background: var(--green-dark); }
+  .btn.gold { background: var(--gold); color: var(--green-dark); }
+  .btn.outline { background: transparent; border: 2px solid var(--green); color: var(--green); }
+  .btn.small { padding: 6px 12px; font-size: 12px; }
+  .btn.danger { background: var(--danger); }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > * { flex: 1 1 200px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e6ece7; }
+  th { background: #f0f5f1; color: var(--green-dark); font-size: 12px; text-transform: uppercase; letter-spacing: .4px; }
+  tr:hover td { background: #fafcfa; }
+
+  /* Badges */
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .tag.green { background: #d9f2e2; color: var(--green-dark); }
+  .tag.red { background: #fbe0dd; color: var(--danger); }
+  .tag.yellow { background: #fcf3d4; color: #8a6d00; }
+
+  /* Alerts */
+  .alert { padding: 11px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; }
+  .alert.error { background: #fbe0dd; color: var(--danger); border-left: 4px solid var(--danger); }
+  .alert.success { background: #d9f2e2; color: var(--green-dark); border-left: 4px solid var(--green); }
+
+  /* Login */
+  .auth-wrap { max-width: 420px; margin: 40px auto; }
+  .auth-wrap .card { padding: 28px; }
+  .auth-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .auth-tabs button { flex: 1; padding: 9px; border-radius: 8px; border: 1px solid #cfdad2; background: #fff; font-weight: 600; cursor: pointer; font-size: 13px; }
+  .auth-tabs button.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+  .empty { text-align: center; color: var(--muted); padding: 26px; font-size: 14px; }
+  .note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 15px; }
+    nav { padding: 6px 8px; }
+    nav button { padding: 6px 10px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">T</div>
+  <div>
+    <h1>Turath College of Education, Kano</h1>
+    <p>NCE Student Portal &bull; Nigerian Certificate in Education</p>
+  </div>
+</header>
+
+<nav id="nav"></nav>
+
+<main id="app"></main>
+
+<footer>
+  &copy; <span id="year"></span> Turath College of Education Kano — NCE Portal. All rights reserved.
+</footer>
+
+<script>
+/* ============================================================
+   TURATH COLLEGE PORTAL — Single Page App (localStorage DB)
+   ============================================================ */
+
+/* ---------- Simple DB layer ---------- */
+const DB = {
+  get(key, fallback = []) {
+    try { return JSON.parse(localStorage.getItem('turath_' + key)) ?? fallback; }
+    catch { return fallback; }
+  },
+  set(key, val) { localStorage.setItem('turath_' + key, JSON.stringify(val)); },
+  init() {
+    if (!localStorage.getItem('turath_users')) {
+      // Seed data
+      this.set('users', [
+        { id: 'u1', name: 'Admin User', email: 'admin@turath.edu.ng', password: 'admin123',
+          role: 'admin', matric: 'ADMIN/001', dept: 'Administration', level: 0, gender: 'Male', session: '2024/2025', semester: 'First' },
+        { id: 'u2', name: 'Aisha Musa', email: 'student@turath.edu.ng', password: 'student123',
+          role: 'student', matric: 'TRC/NCE/24/001', dept: 'Computer Science', level: 100, gender: 'Female', session: '2024/2025', semester: 'First' },
+        { id: 'u3', name: 'Ibrahim Sani', email: 'ibrahim@turath.edu.ng', password: 'student123',
+          role: 'student', matric: 'TRC/NCE/24/002', dept: 'Mathematics', level: 100, gender: 'Male', session: '2024/2025', semester: 'First' }
+      ]);
+
+      this.set('courses', [
+        { id: 'c1', code: 'NCE 101', title: 'Foundations of Education', units: 2, dept: 'Education', level: 100, semester: 'First', lecturer: 'Dr. Aminu Bello' },
+        { id: 'c2', code: 'CSC 111', title: 'Introduction to Computing', units: 3, dept: 'Computer Science', level: 100, semester: 'First', lecturer: 'Mal. Sadiq Yusuf' },
+        { id: 'c3', code: 'MTH 101', title: 'Elementary Mathematics I', units: 3, dept: 'Mathematics', level: 100, semester: 'First', lecturer: 'Dr. Hauwa Iliya' },
+        { id: 'c4', code: 'GSE 101', title: 'Communication in English', units: 2, dept: 'General Studies', level: 100, semester: 'First', lecturer: 'Mrs. Fatima Ojo' },
+        { id: 'c5', code: 'CSC 121', title: 'Programming Fundamentals', units: 3, dept: 'Computer Science', level: 100, semester: 'Second', lecturer: 'Mal. Sadiq Yusuf' },
+        { id: 'c6', code: 'EDU 121', title: 'Educational Psychology', units: 2, dept: 'Education', level: 100, semester: 'Second', lecturer: 'Dr. Aminu Bello' }
+      ]);
+
+      this.set('results', []);
+      this.set('payments', [
+        { id: 'p1', studentId: 'u2', reference: 'TRC-PAY-1001', amount: 45000, purpose: 'School Fees', session: '2024/2025', status: 'paid', date: '2024-10-12' },
+        { id: 'p2', studentId: 'u2', reference: 'TRC-PAY-1002', amount: 5000, purpose: 'Acceptance Fee', session: '2024/2025', status: 'paid', date: '2024-09-20' }
+      ]);
+      this.set('applications', []);
+      this.set('session', null);
+    }
+  }
+};
+
+DB.init();
+
+/* ---------- Utilities ---------- */
+const $ = s => document.querySelector(s);
+const uid = p => p + Math.random().toString(36).slice(2, 9);
+const money = n => '₦' + Number(n).toLocaleString();
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+function getSession() { return DB.get('session', null); }
+function setSession(u) { DB.set('session', u); }
+function logout() { DB.set('session', null); render(); }
+
+function getUsers() { return DB.get('users'); }
+function getCourses() { return DB.get('courses'); }
+function getResults() { return DB.get('results'); }
+function getPayments() { return DB.get('payments'); }
+function getApps() { return DB.get('applications'); }
+
+function gradeOf(total) {
+  if (total >= 70) return { grade: 'A', gp: 5 };
+  if (total >= 60) return { grade: 'B', gp: 4 };
+  if (total >= 50) return { grade: 'C', gp: 3 };
+  if (total >= 45) return { grade: 'D', gp: 2 };
+  if (total >= 40) return { grade: 'E', gp: 1 };
+  return { grade: 'F', gp: 0 };
+}
+
+/* ---------- Nav ---------- */
+function renderNav() {
+  const user = getSession();
+  const nav = $('#nav');
+  if (!user) {
+    nav.innerHTML = `
+      <button data-page="home" class="active">Home</button>
+      <button data-page="login">Login</button>
+      <button data-page="register">Apply / Register</button>
+    `;
+  } else {
+    const isAdmin = user.role === 'admin';
+    nav.innerHTML = `
+      <button data-page="dashboard" class="active">Dashboard</button>
+      <button data-page="courses">Courses</button>
+      <button data-page="results">Results</button>
+      <button data-page="payments">Payments</button>
+      ${isAdmin ? '<button data-page="admin">Admin</button>' : '<button data-page="profile">Profile</button>'}
+      <button data-page="logout" class="logout">Logout (${esc(user.name.split(' ')[0])})</button>
+    `;
+  }
+  nav.querySelectorAll('button').forEach(b => {
+    b.onclick = () => {
+      if (b.dataset.page === 'logout') { logout(); return; }
+      showPage(b.dataset.page);
+    };
+  });
+}
+
+/* ---------- Router ---------- */
+function showPage(name) {
+  document.querySelectorAll('#nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === name);
+  });
+  const user = getSession();
+  // Guard protected pages
+  const protectedPages = ['dashboard','courses','results','payments','profile','admin'];
+  if (protectedPages.includes(name) && !user) name = 'login';
+  if (name === 'admin' && (!user || user.role !== 'admin')) name = 'dashboard';
+
+  const map = {
+    home: renderHome, login: renderLogin, register: renderRegister,
+    dashboard: renderDashboard, courses: renderCourses, results: renderResults,
+    payments: renderPayments, profile: renderProfile, admin: renderAdmin
+  };
+  (map[name] || renderHome)();
+}
+
+/* ---------- HOME ---------- */
+function renderHome() {
+  const user = getSession();
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="hero">
+        <h2>Welcome to Turath College of Education, Kano</h2>
+        <p>The official NCE student portal for registration, course management, results checking,
+        and school fees payment. Everything you need for your Nigerian Certificate in Education in one place.</p>
+        <span class="badge">Accredited by NCCE</span>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="stat"><small>NCE Programmes</small><b>12+</b></div>
+        <div class="stat"><small>Active Students</small><b>${getUsers().filter(u=>u.role==='student').length}</b></div>
+        <div class="stat"><small>Courses Offered</small><b>${getCourses().length}</b></div>
+      </div>
+
+      <div class="card">
+        <h2>Portal Services</h2>
+        <div class="grid grid-2">
+          <div><h3>📚 Course Registration</h3><p class="note">View and register for your NCE courses each semester.</p></div>
+          <div><h3>📊 Results & GPA</h3><p class="note">Check your CA, exam scores, grades and grade point average.</p></div>
+          <div><h3>💳 Fees Payment</h3><p class="note">Pay school fees and acceptance fees, and view receipts.</p></div>
+          <div><h3>📝 Online Application</h3><p class="note">Apply for admission into the NCE programme online.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Demo Accounts</h2>
+        <table>
+          <tr><th>Role</th><th>Email</th><th>Password</th></tr>
+          <tr><td>Admin</td><td>admin@turath.edu.ng</td><td>admin123</td></tr>
+          <tr><td>Student</td><td>student@turath.edu.ng</td><td>student123</td></tr>
+        </table>
+        <div class="row" style="margin-top:16px">
+          ${user ? `<button class="btn" onclick="showPage('dashboard')">Go to Dashboard</button>`
+                 : `<button class="btn" onclick="showPage('login')">Login</button>
+                    <button class="btn outline" onclick="showPage('register')">Apply for Admission</button>`}
+        </div>
+      </div>
+    </section>`;
+}
+
+/* ---------- LOGIN ---------- */
+function renderLogin() {
+  $('#app').innerHTML = `
+    <section class="page active auth-wrap">
+      <div class="card">
+        <h2>Portal Login</h2>
+        <div id="loginAlert"></div>
+        <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@turath.edu.ng" /></div>
+        <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" /></div>
+        <button class="btn" style="width:100%" id="loginBtn">Sign In</button>
+        <p class="note">No account? <a href="#" onclick="showPage('register');return false;">Apply / Register here</a></p>
+      </div>
+    </section>`;
+  $('#loginBtn').onclick = () => {
+    const email = $('#loginEmail').value.trim().toLowerCase();
+    const pass = $('#loginPass').value;
+    const u = getUsers().find(x => x.email.toLowerCase() === email && x.password === pass);
+    if (!u) { $('#loginAlert').innerHTML = `<div class="alert error">Invalid email or password.</div>`; return; }
+    setSession(u);
+    renderNav();
+    showPage('dashboard');
+  };
+  $('#loginPass').onkeydown = e => { if (e.key === 'Enter') $('#loginBtn').click(); };
+}
+
+/* ---------- REGISTER / APPLY ---------- */
+function renderRegister() {
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="card" style="max-width:640px;margin:0 auto">
+        <h2>NCE Admission Application</h2>
+        <p class="note" style="margin-bottom:14px">Fill this form to create your applicant account. Approved applicants receive a matric number.</p>
+        <div id="regAlert"></div>
+        <div class="row">
+          <div class="field"><label>Full Name</label><input id="regName" /></div>
+          <div class="field"><label>Email</label><input id="regEmail" type="email" /></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Phone</label><input id="regPhone" /></div>
+          <div class="field"><label>Gender</label>
+            <select id="regGender"><option>Male</option><option>Female</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label>State of Origin</label><input id="regState" /></div>
+          <div class="field"><label>Preferred Department</label>
+            <select id="regDept">
+              <option>Computer Science</option><option>Mathematics</option>
+              <option>Education</option><option>English</option>
+              <option>Islamic Studies</option><option>Biology</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Password</label><input id="regPass" type="password" /></div>
+        <div class="field"><label>O'Level Results (subjects & grades)</label><textarea id="regOlevel" rows="2" placeholder="e.g. English B3, Maths C4, Biology C5"></textarea></div>
+        <button class="btn" style="width:100%" id="regBtn">Submit Application</button>
+      </div>
+    </section>`;
+
+  $('#regBtn').onclick = () => {
+    const name = $('#regName').value.trim();
+    const email = $('#regEmail').value.trim().toLowerCase();
+    const pass = $('#regPass').value;
+    const alertBox = $('#regAlert');
+
+    if (!name || !email || !pass) {
+      alertBox.innerHTML = `<div class="alert error">Name, email and password are required.</div>`; return;
+    }
+    if (getUsers().some(u => u.email.toLowerCase() === email)) {
+      alertBox.innerHTML = `<div class="alert error">An account with this email already exists.</div>`; return;
+    }
+
+    const applicants = getApps();
+    const appNo = 'TRC/APP/' + (1000 + applicants.length + 1);
+    applicants.push({
+      id: uid('a'), appNo, name, email, phone: $('#regPhone').value,
+      gender: $('#regGender').value, state: $('#regState').value,
+      dept: $('#regDept').value, olevel: $('#regOlevel').value,
+      status: 'pending', date: new Date().toISOString().slice(0, 10)
+    });
+    DB.set('applications', applicants);
+
+    // Create applicant user
+    const users = getUsers();
+    users.push({
+      id: uid('u'), name, email, password: pass, role: 'applicant',
+      matric: '', dept: $('#regDept').value, level: 0,
+      gender: $('#regGender').value, session: '2024/2025', semester: 'First'
+    });
+    DB.set('users', users);
+
+    alertBox.innerHTML = `<div class="alert success">Application submitted! Your application number is <b>${esc(appNo)}</b>. You can now login to track it.</div>`;
+    setTimeout(() => showPage('login'), 2200);
+  };
+}
+
+/* ---------- DASHBOARD ---------- */
+function renderDashboard() {
+  const user = getSession();
+  if (!user) return showPage('login');
+
+  if (user.role === 'applicant') {
+    const app = getApps().find(a => a.email.toLowerCase() === user.email.toLowerCase());
+    $('#app').innerHTML = `
+      <section class="page active">
+        <div class="card">
+          <h2>Welcome, ${esc(user.name)}</h2>
+          <p class="note">Your application is being processed.</p>
+          ${app ? `
+            <table style="margin-top:14px">
+              <tr><th>Application No.</th><td>${esc(app.appNo)}</td></tr>
+              <tr><th>Department</th><td>${esc(app.dept)}</td></tr>
+              <tr><th>Submitted</th><td>${esc(app.date)}</td></tr>
+              <tr><th>Status</th><td>${statusTag(app.status)}</td></tr>
+            </table>` : `<div class="alert error">No application found.</div>`}
+        </div>
+      </section>`;
+    return;
+  }
+
+  if (user.role === 'admin') return renderAdmin();
+
+  const courses = getCourses().filter(c => c.dept === user.dept || c.dept === 'General Studies');
+  const results = getResults().filter(r => r.studentId === user.id);
+  const payments = getPayments().filter(p => p.studentId === user.id);
+  const paid = payments.filter(p => p.status === 'paid').reduce((s,p) => s + p.amount, 0);
+  const gpa = calcGPA(user.id);
+
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="card" style="background:linear-gradient(135deg,var(--green),#0d8a4a);color:#fff">
+        <h2 style="color:#fff">Welcome back, ${esc(user.name)}</h2>
+        <p style="opacity:.9">${esc(user.matric)} &bull; ${esc(user.dept)} &bull; Level ${user.level}</p>
+        <p style="opacity:.8;margin-top:6px">Session: ${esc(user.session)} — ${esc(user.semester)} Semester</p>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="stat"><small>Registered Courses</small><b>${courses.length}</b></div>
+        <div class="stat"><small>Current GPA</small><b>${gpa.toFixed(2)}</b></div>
+        <div class="stat"><small>Total Paid</small><b>${money(paid)}</b></div>
+      </div>
+
+      <div class="card">
+        <h2>My Courses (${esc(user.semester)} Semester)</h2>
+        ${courses.length ? `<table>
+          <tr><th>Code</th><th>Title</th><th>Units</th><th>Lecturer</th></tr>
+          ${courses.map(c => `<tr><td><b>${esc(c.code)}</b></td><td>${esc(c.title)}</td><td>${c.units}</td><td>${esc(c.lecturer)}</td></tr>`).join('')}
+        </table>` : `<div class="empty">No courses registered.</div>`}
+      </div>
+
+      <div class="card">
+        <h2>Recent Results</h2>
+        ${results.length ? `<table>
+          <tr><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th></tr>
+          ${results.slice(-5).map(r => {
+            const c = getCourses().find(x => x.id === r.courseId) || {};
+            const g = gradeOf(r.total);
+            return `<tr><td>${esc(c.code||'')} — ${esc(c.title||'')}</td><td>${r.ca}</td><td>${r.exam}</td><td><b>${r.total}</b></td><td><span class="tag ${g.gp>=3?'green':'red'}">${g.grade}</span></td></tr>`;
+          }).join('')}
+        </table>` : `<div class="empty">No results available yet.</div>`}
+      </div>
+    </section>`;
+}
+
+/* ---------- COURSES ---------- */
+function renderCourses() {
+  const user = getSession();
+  const all = getCourses();
+  const mine = all.filter(c => c.dept === user.dept || c.dept === 'General Studies');
+
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="card">
+        <h2>My Courses</h2>
+        <p class="note">Courses for ${esc(user.dept)} + General Studies.</p>
+        <table style="margin-top:12px">
+          <tr><th>Code</th><th>Title</th><th>Units</th><th>Level</th><th>Semester</th><th>Lecturer</th></tr>
+          ${mine.map(c => `<tr>
+            <td><b>${esc(c.code)}</b></td><td>${esc(c.title)}</td><td>${c.units}</td>
+            <td>${c.level}</td><td>${esc(c.semester)}</td><td>${esc(c.lecturer)}</td>
+          </tr>`).join('') || `<tr><td colspan="6" class="empty">No courses found.</td></tr>`}
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>All Available Courses (NCE)</h2>
+        <table>
+          <tr><th>Code</th><th>Title</th><th>Department</th><th>Units</th><th>Semester</th></tr>
+          ${all.map(c => `<tr>
+            <td><b>${esc(c.code)}</b></td><td>${esc(c.title)}</td>
+            <td>${esc(c.dept)}</td><td>${c.units}</td><td>${esc(c.semester)}</td>
+          </tr>`).join('')}
+        </table>
+      </div>
+    </section>`;
+}
+
+/* ---------- RESULTS ---------- */
+function calcGPA(studentId) {
+  const results = getResults().filter(r => r.studentId === studentId);
+  if (!results.length) return 0;
+  let totalUnits = 0, totalPoints = 0;
+  results.forEach(r => {
+    const c = getCourses().find(x => x.id === r.courseId);
+    if (!c) return;
+    const g = gradeOf(r.total);
+    totalUnits += c.units;
+    totalPoints += c.units * g.gp;
+  });
+  return totalUnits ? totalPoints / totalUnits : 0;
+}
+
+function renderResults() {
+  const user = getSession();
+  const results = getResults().filter(r => r.studentId === user.id);
+  const gpa = calcGPA(user.id);
+
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="grid grid-3">
+        <div class="stat"><small>Courses Recorded</small><b>${results.length}</b></div>
+        <div class="stat"><small>GPA</small><b>${gpa.toFixed(2)}</b></div>
+        <div class="stat"><small>Standing</small><b style="font-size:18px">${gpa>=4.5?'First Class':gpa>=3.5?'Second Upper':gpa>=2.5?'Second Lower':gpa>0?'Pass':'N/A'}</b></div>
+      </div>
+
+      <div class="card">
+        <h2>My Results — ${esc(user.session)} (${esc(user.semester)})</h2>
+        ${results.length ? `<table>
+          <tr><th>Course Code</th><th>Title</th><th>Units</th><th>CA (40)</th><th>Exam (60)</th><th>Total</th><th>Grade</th><th>GP</th></tr>
+          ${results.map(r => {
+            const c = getCourses().find(x => x.id === r.courseId) || {};
+            const g = gradeOf(r.total);
+            return `<tr>
+              <td><b>${esc(c.code||'')}</b></td><td>${esc(c.title||'')}</td><td>${c.units||'-'}</td>
+              <td>${r.ca}</td><td>${r.exam}</td><td><b>${r.total}</b></td>
+              <td><span class="tag ${g.gp>=3?'green':g.gp>=1?'yellow':'red'}">${g.grade}</span></td>
+              <td>${g.gp}</td>
+            </tr>`;
+          }).join('')}
+        </table>` : `<div class="empty">No results recorded yet.</div>`}
+        <div class="note">Grading: A (70+, 5pts) • B (60-69, 4pts) • C (50-59, 3pts) • D (45-49, 2pts) • E (40-44, 1pt) • F (&lt;40, 0pt)</div>
+      </div>
+    </section>`;
+}
+
+/* ---------- PAYMENTS ---------- */
+function renderPayments() {
+  const user = getSession();
+  const payments = getPayments().filter(p => p.studentId === user.id);
+  const paid = payments.filter(p => p.status === 'paid').reduce((s,p) => s + p.amount, 0);
+
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="grid grid-3">
+        <div class="stat"><small>Total Paid</small><b>${money(paid)}</b></div>
+        <div class="stat"><small>Transactions</small><b>${payments.length}</b></div>
+        <div class="stat"><small>Status</small><b style="font-size:18px">${paid >= 45000 ? 'Cleared' : 'Pending'}</b></div>
+      </div>
+
+      <div class="card">
+        <h2>Make Payment</h2>
+        <div id="payAlert"></div>
+        <div class="row">
+          <div class="field"><label>Purpose</label>
+            <select id="payPurpose">
+              <option>School Fees</option><option>Acceptance Fee</option>
+              <option>Hostel Fee</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field"><label>Amount (₦)</label><input id="payAmount" type="number" value="45000" /></div>
+        </div>
+        <button class="btn gold" id="payBtn">Pay Now (Simulated)</button>
+        <div class="note">This is a simulated payment gateway for demo purposes. No real money is charged.</div>
+      </div>
+
+      <div class="card">
+        <h2>Payment History</h2>
+        ${payments.length ? `<table>
+          <tr><th>Reference</th><th>Purpose</th><th>Amount</th><th>Session</th><th>Date</th><th>Status</th></tr>
+          ${payments.slice().reverse().map(p => `<tr>
+            <td>${esc(p.reference)}</td><td>${esc(p.purpose)}</td><td>${money(p.amount)}</td>
+            <td>${esc(p.session)}</td><td>${esc(p.date)}</td>
+            <td><span class="tag ${p.status==='paid'?'green':'yellow'}">${p.status.toUpperCase()}</span></td>
+          </tr>`).join('')}
+        </table>` : `<div class="empty">No payments yet.</div>`}
+      </div>
+    </section>`;
+
+  $('#payBtn').onclick = () => {
+    const purpose = $('#payPurpose').value;
+    const amount = Number($('#payAmount').value);
+    if (!amount || amount < 500) {
+      $('#payAlert').innerHTML = `<div class="alert error">Enter a valid amount (min ₦500).</div>`; return;
+    }
+    const payments = getPayments();
+    const ref = 'TRC-PAY-' + (1000 + payments.length + 1);
+    payments.push({
+      id: uid('p'), studentId: user.id, reference: ref, amount,
+      purpose, session: user.session, status: 'paid',
+      date: new Date().toISOString().slice(0, 10)
+    });
+    DB.set('payments', payments);
+    $('#payAlert').innerHTML = `<div class="alert success">Payment of ${money(amount)} successful. Reference: <b>${ref}</b></div>`;
+    setTimeout(renderPayments, 1400);
+  };
+}
+
+/* ---------- PROFILE ---------- */
+function renderProfile() {
+  const user = getSession();
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="card">
+        <h2>My Profile</h2>
+        <div id="profAlert"></div>
+        <div class="row">
+          <div class="field"><label>Full Name</label><input id="pName" value="${esc(user.name)}" /></div>
+          <div class="field"><label>Email</label><input value="${esc(user.email)}" disabled /></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Matric Number</label><input value="${esc(user.matric||'N/A')}" disabled /></div>
+          <div class="field"><label>Department</label><input value="${esc(user.dept)}" disabled /></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Level</label><input value="${user.level}" disabled /></div>
+          <div class="field"><label>Gender</label><input value="${esc(user.gender||'')}" disabled /></div>
+        </div>
+        <div class="field"><label>New Password (leave blank to keep)</label><input id="pPass" type="password" /></div>
+        <button class="btn" id="profBtn">Save Changes</button>
+      </div>
+    </section>`;
+
+  $('#profBtn').onclick = () => {
+    const users = getUsers();
+    const idx = users.findIndex(u => u.id === user.id);
+    if (idx === -1) return;
+    users[idx].name = $('#pName').value.trim() || users[idx].name;
+    const np = $('#pPass').value;
+    if (np) users[idx].password = np;
+    DB.set('users', users);
+    setSession(users[idx]);
+    renderNav();
+    $('#profAlert').innerHTML = `<div class="alert success">Profile updated successfully.</div>`;
+    setTimeout(renderProfile, 1200);
+  };
+}
+
+/* ---------- ADMIN ---------- */
+function statusTag(s) {
+  if (s === 'approved') return `<span class="tag green">APPROVED</span>`;
+  if (s === 'rejected') return `<span class="tag red">REJECTED</span>`;
+  return `<span class="tag yellow">PENDING</span>`;
+}
+
+function renderAdmin() {
+  const user = getSession();
+  if (!user || user.role !== 'admin') return showPage('dashboard');
+
+  const students = getUsers().filter(u => u.role === 'student');
+  const applicants = getApps();
+  const payments = getPayments();
+  const results = getResults();
+  const totalFees = payments.filter(p => p.status === 'paid').reduce((s,p)=>s+p.amount,0);
+
+  $('#app').innerHTML = `
+    <section class="page active">
+      <div class="grid grid-3">
+        <div class="stat"><small>Students</small><b>${students.length}</b></div>
+        <div class="stat"><small>Applications</small><b>${applicants.length}</b></div>
+        <div class="stat"><small>Total Revenue</small><b>${money(totalFees)}</b></div>
+      </div>
+
+      <div class="card">
+        <h2>Admission Applications</h2>
+        <div id="adminAlert"></div>
+        ${applicants.length ? `<table>
+          <tr><th>App No.</th><th>Name</th><th>Email</th><th>Dept</th><th>Status</th><th>Action</th></tr>
+          ${applicants.map(a => `<tr>
+            <td>${esc(a.appNo)}</td><td>${esc(a.name)}</td><td>${esc(a.email)}</td>
+            <td>${esc(a.dept)}</td><td>${statusTag(a.status)}</td>
+            <td>
+              ${a.status === 'pending' ? `
+                <button class="btn small" onclick="approveApp('${a.id}')">Approve</button>
+                <button class="btn small danger" onclick="rejectApp('${a.id}')">Reject</button>` : '—'}
+            </td>
+          </tr>`).join('')}
+        </table>` : `<div class="empty">No applications submitted yet.</div>`}
+      </div>
+
+      <div class="card">
+        <h2>Enrolled Students</h2>
+        <table>
+          <tr><th>Matric No.</th><th>Name</th><th>Email</th><th>Department</th><th>Level</th></tr>
+          ${students.map(s => `<tr>
+            <td><b>${esc(s.matric)}</b></td><td>${esc(s.name)}</td>
+            <td>${esc(s.email)}</td><td>${esc(s.dept)}</td><td>${s.level}</td>
+          </tr>`).join('') || `<tr><td colspan="5" class="empty">No students.</td></tr>`}
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Add Result</h2>
+        <p class="note">Record CA (0-40) and Exam (0-60) scores for a student.</p>
+        <div class="row" style="margin-top:10px">
+          <div class="field"><label>Student</label>
+            <select id="rStudent">${students.map(s => `<option value="${s.id}">${esc(s.matric)} — ${esc(s.name)}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label>Course</label>
+            <select id="rCourse">${getCourses().map(c => `<option value="${c.id}">${esc(c.code)} — ${esc(c.title)}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label>CA (0-40)</label><input id="rCA" type="number" min="0" max="40" value="30" /></div>
+          <div class="field"><label>Exam (0-60)</label><input id="rExam" type="number" min="0" max="60" value="45" /></div>
+        </div>
+        <button class="btn" id="rBtn">Save Result</button>
+      </div>
+
+      <div class="card">
+        <h2>All Results (${results.length})</h2>
+        ${results.length ? `<table>
+          <tr><th>Student</th><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th></tr>
+          ${results.slice().reverse().slice(0,15).map(r => {
+            const c = getCourses().find(x => x.id === r.courseId) || {};
+            const s = getUsers().find(x => x.id === r.studentId) || {};
+            const g = gradeOf(r.total);
+            return `<tr><td>${esc(s.matric||'')}</td><td>${esc(c.code||'')}</td>
+              <td>${r.ca}</td><td>${r.exam}</td><td><b>${r.total}</b></td>
+              <td><span class="tag ${g.gp>=3?'green':'red'}">${g.grade}</span></td></tr>`;
+          }).join('')}
+        </table>` : `<div class="empty">No results recorded.</div>`}
+      </div>
+    </section>`;
+
+  $('#rBtn').onclick = () => {
+    const studentId = $('#rStudent').value;
+    const courseId = $('#rCourse').value;
+    const ca = Number($('#rCA').value) || 0;
+    const exam = Number($('#rExam').value) || 0;
+    if (ca < 0 || ca > 40 || exam < 0 || exam > 60) {
+      $('#adminAlert').innerHTML = `<div class="alert error">CA must be 0-40 and Exam 0-60.</div>`; return;
+    }
+    const results = getResults();
+    const existing = results.find(r => r.studentId === studentId && r.courseId === courseId);
+    const total = ca + exam;
+    if (existing) { existing.ca = ca; existing.exam = exam; existing.total = total; }
+    else {
+      results.push({ id: uid('r'), studentId, courseId, ca, exam, total });
+    }
+    DB.set('results', results);
+    $('#adminAlert').innerHTML = `<div class="alert success">Result saved successfully.</div>`;
+    setTimeout(renderAdmin, 1200);
+  };
+}
+
+function approveApp(appId) {
+  const apps = getApps();
+  const app = apps.find(a => a.id === appId);
+  if (!app) return;
+
+  const users = getUsers();
+  const user = users.find(u => u.email.toLowerCase() === app.email.toLowerCase());
+  if (!user) return;
+
+  const matricSeq = String(users.filter(u => u.role === 'student').length + 1).padStart(3, '0');
+  const matric = `TRC/NCE/24/${matricSeq}`;
+
+  user.role = 'student';
+  user.matric = matric;
+  user.level = 100;
+  app.status = 'approved';
+
+  DB.set('users', users);
+  DB.set('applications', apps);
+
+  $('#adminAlert').innerHTML = `<div class="alert success">Approved <b>${esc(app.name)}</b> — Matric: <b>${matric}</b></div>`;
+  setTimeout(renderAdmin, 1500);
+}
+
+function rejectApp(appId) {
+  const apps = getApps();
+  const app = apps.find(a => a.id === appId);
+  if (!app) return;
+  app.status = 'rejected';
+  DB.set('applications', apps);
+  $('#adminAlert').innerHTML = `<div class="alert error">Application ${esc(app.appNo)} rejected.</div>`;
+  setTimeout(renderAdmin, 1200);
+}
+
+/* ---------- Boot ---------- */
+function render() {
+  renderNav();
+  const user = getSession();
+  if (user) showPage('dashboard'); else showPage('home');
+}
+
+$('#year').textContent = new Date().getFullYear();
+render();
+
+// Make functions globally accessible for inline onclick
+window.showPage = showPage;
+window.approveApp = approveApp;
+window.rejectApp = rejectApp;
+</script>
+
+</body>
+</html>
